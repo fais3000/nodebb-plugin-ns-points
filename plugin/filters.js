@@ -1,8 +1,8 @@
 (function (Filter) {
     'use strict';
 
-    var async      = require('async'),
-        database   = require('./database'),
+    var async = require('async'),
+        database = require('./database'),
         controller = require('./controller');
 
     /**
@@ -24,20 +24,20 @@
     Filter.menuAdmin = function (header, callback) {
         header.plugins.push({
             route: '/plugins/points',
-            icon : 'fa-gamepad',
-            name : 'Points'
+            icon: 'fa-gamepad',
+            name: 'Points'
         });
         callback(null, header);
     };
 
     Filter.navigation = function (items, callback) {
         items.push({
-            route    : "/points",
-            title    : "Points",
-            enabled  : true,
+            route: "/points",
+            title: "Points",
+            enabled: true,
             iconClass: "fa-gamepad",
             textClass: "visible-xs-inline",
-            text     : "Points"
+            text: "Points"
         });
         callback(null, items);
     };
@@ -64,13 +64,15 @@
      */
     Filter.postGetPosts = function (payload, callback) {
         async.map(payload.posts, function (post, next) {
-            database.getPoints(post.uid, function (error, points) {
-                if (error) {
-                    return next(error);
-                }
-                post.points = points || 0;
-                next(null, post);
-            });
+            if (post) {
+                database.getPoints(post.uid, function (error, points) {
+                    if (error) {
+                        return next(error);
+                    }
+                    post.points = points || 0;
+                    next(null, post);
+                });
+            }
         }, function (error, results) {
             if (error) {
                 return callback(error);
